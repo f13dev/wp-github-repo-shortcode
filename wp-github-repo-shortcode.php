@@ -144,6 +144,12 @@ function f13_github_repo_style()
  */
 function f13_format_github_repo($repository, $tags)
  {
+
+     $latestTag = f13_get_github_latest_tag($tags);
+     if ($latestTag != 'None')
+     {
+         $latestTag = '<a href="https://github.com/' . $repository['full_name'] . '/releases/tag/' . $latestTag . '">' . $latestTag . '</a>';
+     }
      $string = '
      <div class="gitContainer">
         <div class="gitHeader">
@@ -162,16 +168,42 @@ function f13_format_github_repo($repository, $tags)
             ' . $repository['description'] . '
         </div>
         <div class="gitStats">
-            
+            <span class="gitForks">
+                Forks: ' . $repository['forks_count'] . '
+            </span>
+            <span class="gitStars">
+                Stars: ' . $repository['stargazers_count'] . '
+            </span>
+            <span class="gitOpenIssues">
+                Open issues: ' . $repository['open_issues_count'] . '
+            </span>
+            <span class="gitLatestTag">
+                Latest tag: ' . $latestTag . '
+            </span>
+        </div>
+        <div class="gitClone">
+            git clone ' . $repository['clone_url'] . '
         </div>
      </div>
      ';
      return $string;
  }
 
+function f13_get_github_latest_tag($tags)
+{
+    if ($tags != [])
+    {
+        return $tags[0]['name'];
+    }
+    else
+    {
+        return 'None';
+    }
+}
+
 /**
  * Code for testing plugin outside of WordPress
  */
 $author = 'f13dev';
-$repo = 'AlbumSystem';
+$repo = 'Film-Dev-timer';
 print(f13_github_repo_shortcode_test($author, $repo));
