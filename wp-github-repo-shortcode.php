@@ -144,7 +144,29 @@ function f13_github_repo_style()
  */
 function f13_format_github_repo($repository, $tags)
  {
-     return 'Test';
+     $string = '
+     <div class="gitContainer">
+        <div class="gitHeader">
+            <div class="gitIcon">
+            </div>
+            <span style="gitTitle">
+                ' . $repository['name'] . '
+            </span>
+            <span style="gitURL">
+                <a href="' . $repository['html_url'] . '">
+                    ' . $repository['html_url'] . '
+                </a>
+            </span>
+        </div>
+        <div class="gitDescription">
+            ' . $repository['description'] . '
+        </div>
+        <div class="gitStats">
+            
+        </div>
+     </div>
+     ';
+     return $string;
  }
 
 /**
