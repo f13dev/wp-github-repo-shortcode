@@ -26,9 +26,9 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301 USA
 */
 
 // Register the shortcode
-add_shortcode( 'wpplugin', 'f13_github_repo_shortcode');
+// add_shortcode( 'wpplugin', 'f13_github_repo_shortcode');
 // Register the css
-add_action( 'wp_enqueue_scripts', 'f13_github_repo_style');
+// add_action( 'wp_enqueue_scripts', 'f13_github_repo_style');
 
 // Handle the shortcode
 function f13_github_repo_shortcode( $atts, $content = null )
@@ -46,7 +46,7 @@ function f13_github_repo_shortcode( $atts, $content = null )
         // Generate the API results for the repository
         $repository = f13_get_github_api('https://api.github.com/repos/' . $author . '/' . $repo, $token);
         // Generate the API results for the tags
-        $tags = f13_get_github_api('https://api.github.com/repos/' . $author . '/' . $repo . '/tags', $token)
+        $tags = f13_get_github_api('https://api.github.com/repos/' . $author . '/' . $repo . '/tags', $token);
         // Send the api results to be formatted
         return f13_format_github_repo($repository, $tags);
     }
@@ -64,9 +64,6 @@ function f13_github_repo_style()
 }
 
 /**
- *
- */
-/**
  * A function to retrieve the repository information via
  * the GitHub API.
  * @param  $author The author of the GitHub repository
@@ -74,7 +71,7 @@ function f13_github_repo_style()
  * @param  $token  The API token used to access the GitHub API
  * @return         A decoded array of information about the GitHub repository
  */
- private function f13_get_github_api($url, $token)
+ function f13_get_github_api($url, $token)
  {
      // Start curl
      $curl = curl_init();
@@ -125,6 +122,7 @@ function f13_github_repo_style()
  * @param  [type] $results An array of information regarding a GitHub repository
  * @return [type]          A HTML formatted string of information regarding a GitHub repository
  */
- private function f13_format_github_repo($repository, $tags)
+function f13_format_github_repo($repository, $tags)
  {
+     return 'Test';
  }
