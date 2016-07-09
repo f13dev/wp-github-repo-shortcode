@@ -43,10 +43,12 @@ function f13_github_repo_shortcode( $atts, $content = null )
     if ($author != null || $repo != null)
     {
         $token = '';
-        // Generate the API results
-        $results = f13_get_github_repo($author, $repo, $token);
+        // Generate the API results for the repository
+        $repository = f13_get_github_api('https://api.github.com/repos/' . $author . '/' . $repo, $token);
+        // Generate the API results for the tags
+        $tags = f13_get_github_api('https://api.github.com/repos/' . $author . '/' . $repo . '/tags', $token)
         // Send the api results to be formatted
-        return f13_format_github_repo($results);
+        return f13_format_github_repo($repository, $tags);
     }
     else
     {
@@ -72,12 +74,10 @@ function f13_github_repo_style()
  * @param  $token  The API token used to access the GitHub API
  * @return         A decoded array of information about the GitHub repository
  */
- private function f13_get_github_repo($author, $repo, $token)
+ private function f13_get_github_api($url, $token)
  {
      // Start curl
      $curl = curl_init();
-     // Create the URL for curl to use
-     $url = 'https://api.github.com/repos' . $author . '/' . $repo;
      // Set curl options
      curl_setopt($curl, CURLOPT_URL, $url);
      curl_setopt($curl, CURLOPT_HTTPGET, true);
@@ -125,7 +125,6 @@ function f13_github_repo_style()
  * @param  [type] $results An array of information regarding a GitHub repository
  * @return [type]          A HTML formatted string of information regarding a GitHub repository
  */
- private function f13_format_github_repo($results)
+ private function f13_format_github_repo($repository, $tags)
  {
-     
  }
