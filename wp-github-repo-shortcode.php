@@ -62,7 +62,7 @@ function f13_github_repo_shortcode_test( $author, $repo )
     // Check that the author and/or repo have been set
     if ($author != null || $repo != null)
     {
-        $token = '801695e09f91a41637a3a2cb2e9c93ca80e46b84';
+        $token = '';
         // Generate the API results for the repository
         $repository = f13_get_github_api('https://api.github.com/repos/' . $author . '/' . $repo, $token);
         // Generate the API results for the tags
