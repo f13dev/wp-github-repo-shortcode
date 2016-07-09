@@ -26,9 +26,9 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301 USA
 */
 
 // Register the shortcode
-// add_shortcode( 'wpplugin', 'f13_github_repo_shortcode');
+add_shortcode( 'gitrepo', 'f13_github_repo_shortcode');
 // Register the css
-// add_action( 'wp_enqueue_scripts', 'f13_github_repo_style');
+add_action( 'wp_enqueue_scripts', 'f13_github_repo_style');
 
 // Handle the shortcode
 function f13_github_repo_shortcode( $atts, $content = null )
@@ -62,7 +62,7 @@ function f13_github_repo_shortcode_test( $author, $repo )
     // Check that the author and/or repo have been set
     if ($author != null || $repo != null)
     {
-        $token = '';
+        $token = '801695e09f91a41637a3a2cb2e9c93ca80e46b84';
         // Generate the API results for the repository
         $repository = f13_get_github_api('https://api.github.com/repos/' . $author . '/' . $repo, $token);
         // Generate the API results for the tags
@@ -79,7 +79,7 @@ function f13_github_repo_shortcode_test( $author, $repo )
 // Add the stylesheet
 function f13_github_repo_style()
 {
-    wp_register_style( 'f13github-style', plugins_url('css/f13_github.css', __FILE__));
+    wp_register_style( 'f13github-style', plugins_url('wp-github-repo-shortcode.css', __FILE__));
     wp_enqueue_style( 'f13github-style' );
 }
 
@@ -151,35 +151,36 @@ function f13_format_github_repo($repository, $tags)
          $latestTag = '<a href="https://github.com/' . $repository['full_name'] . '/releases/tag/' . $latestTag . '">' . $latestTag . '</a>';
      }
      $string = '
+     <link rel="stylesheet" type="text/css" href="wp-github-repo-shortcode.css">
      <div class="gitContainer">
         <div class="gitHeader">
             <div class="gitIcon">
             </div>
-            <span style="gitTitle">
-                ' . $repository['name'] . '
-            </span>
-            <span style="gitURL">
-                <a href="' . $repository['html_url'] . '">
-                    ' . $repository['html_url'] . '
-                </a>
-            </span>
-        </div>
-        <div class="gitDescription">
-            ' . $repository['description'] . '
-        </div>
+            <div class="gitTitle">
+                <a href="' . $repository['html_url'] . '">'. $repository['name'] . '</a>
+            </div>
+        </div>';
+        if ($repository['description'] != null)
+        {
+            $string .= '
+                <div class="gitDescription">
+                    ' . $repository['description'] . '
+                </div>';
+        }
+        $string .='
         <div class="gitStats">
-            <span class="gitForks">
+            <div class="gitForks">
                 Forks: ' . $repository['forks_count'] . '
-            </span>
-            <span class="gitStars">
+            </div>
+            <div class="gitStars">
                 Stars: ' . $repository['stargazers_count'] . '
-            </span>
-            <span class="gitOpenIssues">
+            </div>
+            <div class="gitOpenIssues">
                 Open issues: ' . $repository['open_issues_count'] . '
-            </span>
-            <span class="gitLatestTag">
+            </div>
+            <div class="gitLatestTag">
                 Latest tag: ' . $latestTag . '
-            </span>
+            </div>
         </div>
         <div class="gitClone">
             git clone ' . $repository['clone_url'] . '
@@ -200,10 +201,3 @@ function f13_get_github_latest_tag($tags)
         return 'None';
     }
 }
-
-/**
- * Code for testing plugin outside of WordPress
- */
-$author = 'f13dev';
-$repo = 'Film-Dev-timer';
-print(f13_github_repo_shortcode_test($author, $repo));
