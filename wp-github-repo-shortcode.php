@@ -56,6 +56,26 @@ function f13_github_repo_shortcode( $atts, $content = null )
     }
 }
 
+// Testing shortcode
+function f13_github_repo_shortcode_test( $author, $repo )
+{
+    // Check that the author and/or repo have been set
+    if ($author != null || $repo != null)
+    {
+        $token = '';
+        // Generate the API results for the repository
+        $repository = f13_get_github_api('https://api.github.com/repos/' . $author . '/' . $repo, $token);
+        // Generate the API results for the tags
+        $tags = f13_get_github_api('https://api.github.com/repos/' . $author . '/' . $repo . '/tags', $token);
+        // Send the api results to be formatted
+        return f13_format_github_repo($repository, $tags);
+    }
+    else
+    {
+        return 'The author and repo attributes are required, enter [gitrepo author="anAuhor" repo="aRepo"] to use this shortcode.';
+    }
+}
+
 // Add the stylesheet
 function f13_github_repo_style()
 {
@@ -126,3 +146,10 @@ function f13_format_github_repo($repository, $tags)
  {
      return 'Test';
  }
+
+/**
+ * Code for testing plugin outside of WordPress
+ */
+$author = 'f13dev';
+$repo = 'AlbumSystem';
+print(f13_github_repo_shortcode_test($author, $repo));
