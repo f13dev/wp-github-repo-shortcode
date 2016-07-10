@@ -29,6 +29,9 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301 USA
 add_shortcode( 'gitrepo', 'f13_github_repo_shortcode');
 // Register the css
 add_action( 'wp_enqueue_scripts', 'f13_github_repo_style');
+// Register an option to store the API token
+add_option( 'f13_github_api_token', 'GitHub API');
+add_action( 'admin_menu', 'f13_github_repo_settings');
 
 // Handle the shortcode
 function f13_github_repo_shortcode( $atts, $content = null )
@@ -200,4 +203,12 @@ function f13_get_github_latest_tag($tags)
     {
         return 'None';
     }
+}
+
+/**
+ * Functions used to generate the backend
+ */
+function f13_github_repo_settings()
+{
+    add_options_page( 'GitHub Repo Settings', 'GitHub Repo', 'manage_options', 'f13_github_repo_menu', 'f13_github_repo_settings');
 }
