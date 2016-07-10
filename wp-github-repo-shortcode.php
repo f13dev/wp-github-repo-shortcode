@@ -29,6 +29,12 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301 USA
 add_shortcode( 'gitrepo', 'f13_github_repo_shortcode');
 // Register the css
 add_action( 'wp_enqueue_scripts', 'f13_github_repo_style');
+// Register an option
+add_option( 'f13_display_mode', 'token');
+// Register update option
+update_option( 'f13_display_mode', 'token');
+// Register menu
+add_action( 'admin_menu', 'f13_create_settings_submenu');
 
 // Handle the shortcode
 function f13_github_repo_shortcode( $atts, $content = null )
@@ -200,4 +206,61 @@ function f13_get_github_latest_tag($tags)
     {
         return 'None';
     }
+}
+
+/**
+ * Functions to create the backend
+ */
+
+function f13_create_settings_submenu()
+{
+    add_options_page( 'GitHub Repo Shortcode Settings Page', 'GitHub Repo', 'manage_options', 'github_repo_settings_menu', 'f13_settings_page');
+    add_action( 'admin_init', 'f13_register_settings' );
+}
+
+function f13_register_settings()
+{
+    register_setting( 'f13-settings-group', 'f13_options', 'f13_sanitize_options' );
+}
+
+function f13_settings_page()
+{
+?>
+    <div class="wrap">
+        <h2>GitHub Repo Shotcode Options</h2>
+        Quick intro to the plugin<br/>
+        How to get an access key:
+        <ol>
+            <li>
+                Go to github.com
+            </li>
+            <li>
+                Get a key
+            </li>
+        </ol>
+        <form method="post" action="options.php">
+            <?php settings_fields( 'f13-settings-group' ); ?>
+            <?php $f13_options = get_option( 'f13_options' ); ?>
+            <table class="from-table">
+                <tr valign="middle">
+                    <th scope="row">
+                        GitHub API Token
+                    </th>
+                    <td>
+                        <input type="text" name="f13_options['token']" value="<?php echo esc_attr( $f13_options['token'] ); ?>" />
+                    </td>
+                </tr>
+            </table>
+            <p class="submit">
+                <input type="submit" class="button-primary" value="Save API Token" />
+            </p>
+        </form>
+    </div>
+<?php
+}
+
+function f13_sanitize_options( $input )
+{
+    $input['token'] = sanitize_text_field( $input['token'] );
+    return $input;
 }
