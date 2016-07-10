@@ -31,6 +31,7 @@ add_shortcode( 'gitrepo', 'f13_github_repo_shortcode');
 add_action( 'wp_enqueue_scripts', 'f13_github_repo_style');
 // Register an option to store the API token
 add_option( 'f13_github_api_token', 'GitHub API');
+// Register a function to create the backend menu
 add_action( 'admin_menu', 'f13_github_repo_settings');
 
 // Handle the shortcode
@@ -210,5 +211,10 @@ function f13_get_github_latest_tag($tags)
  */
 function f13_github_repo_settings()
 {
-    add_options_page( 'GitHub Repo Settings', 'GitHub Repo', 'manage_options', 'f13_github_repo_menu', 'f13_github_repo_settings');
+    add_options_page( 'GitHub Repo Settings', 'GitHub Repo', 'manage_options', 'f13_github_repo_menu', 'f13_github_repo_settings_page');
+}
+
+function f13_github_repo_settings_page()
+{
+    
 }
