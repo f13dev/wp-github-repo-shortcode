@@ -30,9 +30,11 @@ add_shortcode( 'gitrepo', 'f13_github_repo_shortcode');
 // Register the css
 add_action( 'wp_enqueue_scripts', 'f13_github_repo_style');
 // Register an option to store the API token
-add_option( 'f13_github_api_token', 'GitHub API');
+add_option( 'f13_github_api_token', '');
 // Register a function to create the backend menu
 add_action( 'admin_menu', 'f13_github_repo_settings');
+// Register settings function
+add_action( 'admin_init', 'f13_github_repo_register_settings');
 
 // Handle the shortcode
 function f13_github_repo_shortcode( $atts, $content = null )
@@ -216,5 +218,40 @@ function f13_github_repo_settings()
 
 function f13_github_repo_settings_page()
 {
-    
+?>
+    <div class="wrap">
+        <h2>GitHub Repo Shortcode Settings</h2>
+        This plugin will function without a GitHub API token, although with a much lower rate limit;
+        a lower rate limit may cause the plugin to fail to retrieve the required data. It is therefor
+        recommended to add an API token.
+        <form method="post" action="options.php">
+            <?php settings_fields( 'f13_github_repo_settings_group' ); ?>
+            <?php $f13_github_repo_options = get_option( 'f13_github_repo_options' ); ?>
+            <table class="form-table">
+                <tr>
+                    <th scope="row">
+                        GitHub API Token
+                    </th>
+                    <td>
+                        <input type="text" name="f13_github_api_token" value="<?php echo esc_attr( $f13_github_repo_options ); ?>" width="100"/>
+                    </td>
+                </tr>
+            </table>
+            <p class="submit">
+                <input type="submit" class="button-primary" value="Update API token"  />
+            </p>
+        </form>
+    </div>
+<?php
+}
+
+function f13_github_repo_register_settings()
+{
+    register_setting( 'f13_github_repo_settings_group', 'f13_github_repo_options', 'f13_github_repo_sanitize_options' );
+}
+
+function f13_github_repo_sanitize_options( $input )
+{
+    $input = sanitize_text_field( $input );
+    return $input;
 }
