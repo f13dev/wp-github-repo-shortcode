@@ -226,14 +226,14 @@ function f13_github_repo_settings_page()
         recommended to add an API token.
         <form method="post" action="options.php">
             <?php settings_fields( 'f13_github_repo_settings_group' ); ?>
-            <?php $f13_github_repo_options = get_option( 'f13_github_repo_options' ); ?>
+            <?php $f13_github_repo_options = get_option( 'f13_github_repo_settings_group' ); ?>
             <table class="form-table">
                 <tr>
                     <th scope="row">
                         GitHub API Token
                     </th>
                     <td>
-                        <input type="text" name="f13_github_api_token" value="<?php echo esc_attr( $f13_github_repo_options ); ?>" width="100"/>
+                        <input type="text" name="f13_github_api_token" value="<?php echo esc_attr( $f13_github_repo_options['api_token'] ); ?>" width="100"/>
                     </td>
                 </tr>
             </table>
@@ -252,6 +252,6 @@ function f13_github_repo_register_settings()
 
 function f13_github_repo_sanitize_options( $input )
 {
-    $input = sanitize_text_field( $input );
+    $input['api_token'] = sanitize_text_field( $input['api_token'] );
     return $input;
 }
