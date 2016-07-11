@@ -2,7 +2,8 @@
 {
   border-radius: 10px;
   background: #fff;
-  border: 1px solid grey;
+  /*border: 1px solid grey;*/
+  background: #eee;
 }
 
 .gitIcon
@@ -15,30 +16,59 @@
   margin-top: 0.15em;
 }
 
+.gitHeader
+{
+  width: 100%;
+  height: 200px;
+  background: url('img/banner.png');
+  border-radius: 10px 10px 0 0;
+}
+
 .gitTitle
 {
+  /*
   font-size: 22px;
   font-weight: bolder;
   width: 100%;
-  /* Permalink - use to edit and share this gradient: http://colorzilla.com/gradient-editor/#f6f8f9+0,e5ebee+50,d7dee3+51,f5f7f9+100;White+Gloss */
-  background: rgb(246,248,249); /* Old browsers */
-  background: -moz-linear-gradient(top,  rgba(246,248,249,1) 0%, rgba(229,235,238,1) 50%, rgba(215,222,227,1) 51%, rgba(245,247,249,1) 100%); /* FF3.6-15 */
-  background: -webkit-linear-gradient(top,  rgba(246,248,249,1) 0%,rgba(229,235,238,1) 50%,rgba(215,222,227,1) 51%,rgba(245,247,249,1) 100%); /* Chrome10-25,Safari5.1-6 */
-  background: linear-gradient(to bottom,  rgba(246,248,249,1) 0%,rgba(229,235,238,1) 50%,rgba(215,222,227,1) 51%,rgba(245,247,249,1) 100%); /* W3C, IE10+, FF16+, Chrome26+, Opera12+, Safari7+ */
-  filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#f6f8f9', endColorstr='#f5f7f9',GradientType=0 ); /* IE6-9 */
+  background: -moz-linear-gradient(top,  rgba(246,248,249,1) 0%, rgba(229,235,238,1) 50%, rgba(215,222,227,1) 51%, rgba(245,247,249,1) 100%);
+  background: -webkit-linear-gradient(top,  rgba(246,248,249,1) 0%,rgba(229,235,238,1) 50%,rgba(215,222,227,1) 51%,rgba(245,247,249,1) 100%);
+  background: linear-gradient(to bottom,  rgba(246,248,249,1) 0%,rgba(229,235,238,1) 50%,rgba(215,222,227,1) 51%,rgba(245,247,249,1) 100%);
+  filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#f6f8f9', endColorstr='#f5f7f9',GradientType=0 );
   border-radius: 10px 10px 0 0;
   border-bottom: 1px solid grey;
   padding: 0 32px;
   text-align: center;
+  */
+ position: absolute;
+ margin-top: 120px;
+ margin-left: 1em;
+ display: block;
+ border-radius: 6px;
+ background: #444;
+ color: #fff;
+ font-size: 1.4em;
+ padding: 0.3em 0.6em;;
 }
 
 .gitTitle a
 {
   text-decoration: none;
-  color: #343434;
+  color: #fff;
+}
+
+.gitTitle a:hover
+{
+  color: #fff;
+  text-decoration: underline;
 }
 
 .gitDescription
+{
+  padding: 0.5em 0.5em 0 0.5em;
+  font-size: 1.2em;
+}
+
+.gitLink
 {
   padding: 0.5em 0.5em 0 0.5em;
   font-size: 1.2em;

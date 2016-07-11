@@ -85,7 +85,7 @@ function f13_github_repo_shortcode_test( $author, $repo )
 // Add the stylesheet
 function f13_github_repo_style()
 {
-    wp_register_style( 'f13github-style', plugins_url('wp-github-repo-shortcode.css', __FILE__));
+    wp_register_style( 'f13github-style', plugins_url('wp-github-repo-shortcode.css', __FILE__) );
     wp_enqueue_style( 'f13github-style' );
 }
 
@@ -157,11 +157,8 @@ function f13_format_github_repo($repository, $tags)
          $latestTag = '<a href="https://github.com/' . $repository['full_name'] . '/releases/tag/' . $latestTag . '">' . $latestTag . '</a>';
      }
      $string = '
-     <link rel="stylesheet" type="text/css" href="wp-github-repo-shortcode.css">
      <div class="gitContainer">
         <div class="gitHeader">
-            <div class="gitIcon">
-            </div>
             <div class="gitTitle">
                 <a href="' . $repository['html_url'] . '">'. $repository['name'] . '</a>
             </div>
@@ -174,6 +171,9 @@ function f13_format_github_repo($repository, $tags)
                 </div>';
         }
         $string .='
+        <div class="gitLink">
+            <a href="' . $repository['html_url'] . '">' . $repository['html_url'] . '</a>
+        </div>
         <div class="gitStats">
             <div class="gitForks">
                 Forks: ' . $repository['forks_count'] . '
