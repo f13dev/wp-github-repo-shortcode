@@ -1,0 +1,98 @@
+.gitContainer
+{
+  border-radius: 10px;
+  background: #fff;
+  /*border: 1px solid grey;*/
+  background: #eee;
+}
+
+.gitIcon
+{
+  background-image: url('img/git_logo.png');
+  width: 32px;
+  height: 32px;
+  position: absolute;
+  margin-left: 0.15em;
+  margin-top: 0.15em;
+}
+
+.gitHeader
+{
+  width: 100%;
+  height: 200px;
+  background: url('img/banner.png');
+  border-radius: 10px 10px 0 0;
+  background-repeat: none;
+}
+
+.gitTitle
+{
+  font-size: 20px;
+  line-height: 1em;
+  padding: 8px 15px;
+  background: rgba( 30, 30, 30, 0.9);
+  text-shadow: 0 1px 3px rgba( 0, 0, 0, 0.4);
+  border-radius: 8px;
+  font-family: "Helvetica Neue", sans-serif;
+  font-weight: bold;
+  margin-top: 200px;
+  margin-left: 20px;
+  position: relative;
+  top: 160px;
+}
+
+.gitTitle a
+{
+  text-decoration: none;
+  color: #fff;
+}
+
+.gitTitle a:hover
+{
+  color: #fff;
+  text-decoration: underline;
+}
+
+.gitDescription
+{
+  padding: 0.5em 0.5em 0 0.5em;
+  font-size: 1.2em;
+}
+
+.gitLink
+{
+  padding: 0.5em 0.5em 0 0.5em;
+  font-size: 1.2em;
+}
+
+.gitStats
+{
+  padding: 0.5em;
+  font-size: 1.2em;
+}
+
+.gitStats > div
+{
+  width: 40%;
+  min-width: 220px;
+  display: inline-block;
+}
+
+.gitClone
+{
+  /* Permalink - use to edit and share this gradient: http://colorzilla.com/gradient-editor/#45484d+0,000000+100;Black+3D+%231 */
+  background: rgb(69,72,77); /* Old browsers */
+  background: -moz-linear-gradient(top,  rgba(69,72,77,1) 0%, rgba(0,0,0,1) 100%); /* FF3.6-15 */
+  background: -webkit-linear-gradient(top,  rgba(69,72,77,1) 0%,rgba(0,0,0,1) 100%); /* Chrome10-25,Safari5.1-6 */
+  background: linear-gradient(to bottom,  rgba(69,72,77,1) 0%,rgba(0,0,0,1) 100%); /* W3C, IE10+, FF16+, Chrome26+, Opera12+, Safari7+ */
+  filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#45484d', endColorstr='#000000',GradientType=0 ); /* IE6-9 */
+  color: #33cc33;
+  padding: 10px 15px;
+  border-radius: 0 0 10px 10px;
+  font-family: Lucida Console,Lucida Sans Typewriter,monaco,Bitstream Vera Sans Mono,monospace;
+}
+
+.gitURL a:hover
+{
+  text-decoration: underline;
+}

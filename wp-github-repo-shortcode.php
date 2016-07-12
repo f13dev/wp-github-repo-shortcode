@@ -26,29 +26,58 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301 USA
 */
 
 // Register the shortcode
-// add_shortcode( 'wpplugin', 'f13_github_repo_shortcode');
+add_shortcode( 'gitrepo', 'f13_github_repo_shortcode');
 // Register the css
-// add_action( 'wp_enqueue_scripts', 'f13_github_repo_style');
+add_action( 'wp_enqueue_scripts', 'f13_github_repo_style');
+// Register the admin page
+add_action('admin_menu', 'f13_grs_create_menu');
 
-// Handle the shortcode
+/**
+ * [f13_github_repo_shortcode description]
+ * @param  [type] $atts    [description]
+ * @param  [type] $content [description]
+ * @return [type]          [description]
+ */
 function f13_github_repo_shortcode( $atts, $content = null )
 {
+
     // Get the attributes
     extract( shortcode_atts ( array (
         'author' => 'none',
         'repo' => 'none' // Default slug won't show a plugin
     ), $atts ));
 
-    // Check that the author and/or repo have been set
+    // Set the cache name for this instance of the shortcode
+    $cache = get_transient('wpgrs' . md5(serialize($atts)));
+
+    if ($cache)
+    {
+        // If the cache exists, return it rather than re-creating it
+        return $cache;
+    }
+    else
     if ($author != null || $repo != null)
     {
-        $token = '';
+        // Get the plugin settings variables for timeout and token
+        $timeout = esc_attr( get_option('cache_timeout')) * 60;
+        // If the timeout is set to 0, or is not a number, change it to 1 second, so effectively not
+        // caching, but saves a cache that doesnt timeout if the setting is changed later
+        if ($timeout == 0 || !is_numeric($timeout))
+        {
+            $timeout = 1;
+        }
+        $token = esc_attr( get_option('token'));
+        // If the cache doesn't exist, create it and return the shortcode
         // Generate the API results for the repository
         $repository = f13_get_github_api('https://api.github.com/repos/' . $author . '/' . $repo, $token);
         // Generate the API results for the tags
         $tags = f13_get_github_api('https://api.github.com/repos/' . $author . '/' . $repo . '/tags', $token);
-        // Send the api results to be formatted
-        return f13_format_github_repo($repository, $tags);
+        // Get the response of creating the shortcode
+        $response = f13_format_github_repo($repository, $tags);
+        // Store the output of the shortcode into the cache
+        set_transient('wpgrs' . md5(serialize($atts)), $response, $timeout);
+        // Return the response
+        return $response;
     }
     else
     {
@@ -56,30 +85,13 @@ function f13_github_repo_shortcode( $atts, $content = null )
     }
 }
 
-// Testing shortcode
-function f13_github_repo_shortcode_test( $author, $repo )
-{
-    // Check that the author and/or repo have been set
-    if ($author != null || $repo != null)
-    {
-        $token = '';
-        // Generate the API results for the repository
-        $repository = f13_get_github_api('https://api.github.com/repos/' . $author . '/' . $repo, $token);
-        // Generate the API results for the tags
-        $tags = f13_get_github_api('https://api.github.com/repos/' . $author . '/' . $repo . '/tags', $token);
-        // Send the api results to be formatted
-        return f13_format_github_repo($repository, $tags);
-    }
-    else
-    {
-        return 'The author and repo attributes are required, enter [gitrepo author="anAuhor" repo="aRepo"] to use this shortcode.';
-    }
-}
-
-// Add the stylesheet
+/**
+ * [f13_github_repo_style description]
+ * @return [type] [description]
+ */
 function f13_github_repo_style()
 {
-    wp_register_style( 'f13github-style', plugins_url('css/f13_github.css', __FILE__));
+    wp_register_style( 'f13github-style', plugins_url('wp-github-repo-shortcode.css', __FILE__) );
     wp_enqueue_style( 'f13github-style' );
 }
 
@@ -153,33 +165,34 @@ function f13_format_github_repo($repository, $tags)
      $string = '
      <div class="gitContainer">
         <div class="gitHeader">
-            <div class="gitIcon">
-            </div>
-            <span style="gitTitle">
-                ' . $repository['name'] . '
+            <span class="gitTitle">
+                <a href="' . $repository['html_url'] . '">'. $repository['name'] . '</a>
             </span>
-            <span style="gitURL">
-                <a href="' . $repository['html_url'] . '">
-                    ' . $repository['html_url'] . '
-                </a>
-            </span>
-        </div>
-        <div class="gitDescription">
-            ' . $repository['description'] . '
+        </div>';
+        if ($repository['description'] != null)
+        {
+            $string .= '
+                <div class="gitDescription">
+                    ' . $repository['description'] . '
+                </div>';
+        }
+        $string .='
+        <div class="gitLink">
+            <a href="' . $repository['html_url'] . '">' . $repository['html_url'] . '</a>
         </div>
         <div class="gitStats">
-            <span class="gitForks">
+            <div class="gitForks">
                 Forks: ' . $repository['forks_count'] . '
-            </span>
-            <span class="gitStars">
+            </div>
+            <div class="gitStars">
                 Stars: ' . $repository['stargazers_count'] . '
-            </span>
-            <span class="gitOpenIssues">
+            </div>
+            <div class="gitOpenIssues">
                 Open issues: ' . $repository['open_issues_count'] . '
-            </span>
-            <span class="gitLatestTag">
+            </div>
+            <div class="gitLatestTag">
                 Latest tag: ' . $latestTag . '
-            </span>
+            </div>
         </div>
         <div class="gitClone">
             git clone ' . $repository['clone_url'] . '
@@ -189,6 +202,11 @@ function f13_format_github_repo($repository, $tags)
      return $string;
  }
 
+/**
+ * [f13_get_github_latest_tag description]
+ * @param  [type] $tags [description]
+ * @return [type]       [description]
+ */
 function f13_get_github_latest_tag($tags)
 {
     if ($tags != [])
@@ -202,8 +220,65 @@ function f13_get_github_latest_tag($tags)
 }
 
 /**
- * Code for testing plugin outside of WordPress
+ * Functions to create the backend
  */
-$author = 'f13dev';
-$repo = 'Film-Dev-timer';
-print(f13_github_repo_shortcode_test($author, $repo));
+
+/**
+ * [f13_grs_create_menu description]
+ * @return [type] [description]
+ */
+function f13_grs_create_menu()
+{
+    // Create the top-level menu
+    add_menu_page('GitHub Repo Shortcode Settings', 'GitHut Settings', 'administrator', __FILE__, 'f13_grs_settings_page');
+    // Retister the Settings
+    add_action( 'admin_init', 'f13_grs_settings');
+}
+
+/**
+ * [f13_grs_settings description]
+ * @return [type] [description]
+ */
+function f13_grs_settings()
+{
+    // Register settings for token and timeout
+    register_setting( 'f13-grs-settings-group', 'token');
+    register_setting( 'f13-grs-settings-group', 'cache_timeout');
+}
+
+/**
+ * [f13_grs_settings_page description]
+ * @return [type] [description]
+ */
+function f13_grs_settings_page()
+{
+?>
+    <div class="wrap">
+        <h2>GitHub Settings</h2>
+        Introductory text
+        <form method="post" action="options.php">
+            <?php settings_fields( 'f13-grs-settings-group' ); ?>
+            <?php do_settings_sections( 'f13-grs-settings-group' ); ?>
+            <table class="form-table">
+                <tr valign="top">
+                    <th scope="row">
+                        GitHub Token
+                    </th>
+                    <td>
+                        <input type="password" name="token" value="<?php echo esc_attr( get_option( 'token' ) ); ?>" style="width: 50%;"/>
+                    </td>
+                </tr>
+                <tr valign="top">
+                    <th scope="row">
+                        Cache timeout (minutes)
+                    </th>
+                    <td>
+                        <input type="number" name="cache_timeout" value="<?php echo esc_attr( get_option( 'cache_timeout' ) ); ?>" style="width: 75px;"/>
+                    </td>
+                </tr>
+            </table>
+            <?php submit_button(); ?>
+        </form>
+    </div>
+<?php
+}
