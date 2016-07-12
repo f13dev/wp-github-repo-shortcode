@@ -59,7 +59,7 @@ function f13_github_repo_shortcode( $atts, $content = null )
     if ($author != null || $repo != null)
     {
         // Get the plugin settings variables for timeout and token
-        $timeout = esc_attr( get_option('cache_timeout'));
+        $timeout = esc_attr( get_option('cache_timeout')) * 60;
         $token = esc_attr( get_option('token'));
         // If the cache doesn't exist, create it and return the shortcode
         // Generate the API results for the repository
@@ -68,8 +68,6 @@ function f13_github_repo_shortcode( $atts, $content = null )
         $tags = f13_get_github_api('https://api.github.com/repos/' . $author . '/' . $repo . '/tags', $token);
         // Get the response of creating the shortcode
         $response = f13_format_github_repo($repository, $tags);
-        $response .= 'Your token is ' . $token;
-        $response .= 'Your timeout is ' . $timeout;
         // Store the output of the shortcode into the cache
         set_transient('wpgrs' . md5(serialize($atts)), $response, $timeout);
         // Return the response
@@ -269,7 +267,7 @@ function f13_grs_settings_page()
                         Cache timeout (minutes)
                     </th>
                     <td>
-                        <input type="text" name="cache_timeout" value="<?php echo esc_attr( get_option( 'cache_timeout' ) ); ?>" />
+                        <input type="number" name="cache_timeout" value="<?php echo esc_attr( get_option( 'cache_timeout' ) ); ?>" />
                     </td>
                 </tr>
             </table>
