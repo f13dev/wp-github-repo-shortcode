@@ -60,9 +60,9 @@ function f13_github_repo_shortcode( $atts, $content = null )
     {
         // Get the plugin settings variables for timeout and token
         $timeout = esc_attr( get_option('cache_timeout')) * 60;
-        // If the timeout is set to 0, change it to 1 second, so effectively not
+        // If the timeout is set to 0, or is not a number, change it to 1 second, so effectively not
         // caching, but saves a cache that doesnt timeout if the setting is changed later
-        if ($timeout == 0)
+        if ($timeout == 0 || !is_numeric($timeout))
         {
             $timeout = 1;
         }
