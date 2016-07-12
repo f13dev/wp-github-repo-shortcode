@@ -265,7 +265,7 @@ function f13_grs_settings_page()
                         GitHub Token
                     </th>
                     <td>
-                        <input type="text" name="token" value="<?php echo esc_attr( get_option( 'token' ) ); ?>" />
+                        <input type="password" name="token" value="<?php echo esc_attr( get_option( 'token' ) ); ?>" style="width: 50%;"/>
                     </td>
                 </tr>
                 <tr valign="top">
@@ -273,7 +273,7 @@ function f13_grs_settings_page()
                         Cache timeout (minutes)
                     </th>
                     <td>
-                        <input type="number" name="cache_timeout" value="<?php echo esc_attr( get_option( 'cache_timeout' ) ); ?>" />
+                        <input type="number" name="cache_timeout" value="<?php echo esc_attr( get_option( 'cache_timeout' ) ); ?>" style="width: 75px;"/>
                     </td>
                 </tr>
             </table>
