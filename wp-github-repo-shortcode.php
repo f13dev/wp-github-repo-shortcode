@@ -209,7 +209,7 @@ function f13_format_github_repo($repository, $tags)
  */
 function f13_get_github_latest_tag($tags)
 {
-    if ($tags != [])
+    if ($tags != '')
     {
         return $tags[0]['name'];
     }
