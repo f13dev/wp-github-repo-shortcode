@@ -25,6 +25,10 @@ along with this program; if not, write to the Free Software
 Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301 USA
 */
 
+// Variables that are to later be set via the admin panel
+$timeout = 10 * 60;
+$token = '';
+
 // Register the shortcode
 add_shortcode( 'gitrepo', 'f13_github_repo_shortcode');
 // Register the css
@@ -45,36 +49,30 @@ function f13_github_repo_shortcode( $atts, $content = null )
         'repo' => 'none' // Default slug won't show a plugin
     ), $atts ));
 
-    // Check that the author and/or repo have been set
-    if ($author != null || $repo != null)
+    // Set the cache name for this instance of the shortcode
+    $cache = get_transient('wpgrs' . md5(serialize($atts)));
+
+    if ($cache)
     {
-        $token = '';
-        // Generate the API results for the repository
-        $repository = f13_get_github_api('https://api.github.com/repos/' . $author . '/' . $repo, $token);
-        // Generate the API results for the tags
-        $tags = f13_get_github_api('https://api.github.com/repos/' . $author . '/' . $repo . '/tags', $token);
-        // Send the api results to be formatted
-        return f13_format_github_repo($repository, $tags);
+        // If the cache exists, return it rather than re-creating it
+        return $cache;
     }
     else
-    {
-        return 'The author and repo attributes are required, enter [gitrepo author="anAuhor" repo="aRepo"] to use this shortcode.';
-    }
-}
-
-// Testing shortcode
-function f13_github_repo_shortcode_test( $author, $repo )
-{
-    // Check that the author and/or repo have been set
     if ($author != null || $repo != null)
     {
-        $token = '';
+        // Get the gloabal variables for timeout and token
+        global $timeout, $token;
+        // If the cache doesn't exist, create it and return the shortcode
         // Generate the API results for the repository
         $repository = f13_get_github_api('https://api.github.com/repos/' . $author . '/' . $repo, $token);
         // Generate the API results for the tags
         $tags = f13_get_github_api('https://api.github.com/repos/' . $author . '/' . $repo . '/tags', $token);
-        // Send the api results to be formatted
-        return f13_format_github_repo($repository, $tags);
+        // Get the response of creating the shortcode
+        $response = f13_format_github_repo($repository, $tags);
+        // Store the output of the shortcode into the cache
+        set_transient('wpgrs' . md5(serialize($atts)), $response, $timeout);
+        // Return the response
+        return $response;
     }
     else
     {
@@ -159,9 +157,9 @@ function f13_format_github_repo($repository, $tags)
      $string = '
      <div class="gitContainer">
         <div class="gitHeader">
-            <div class="gitTitle">
+            <span class="gitTitle">
                 <a href="' . $repository['html_url'] . '">'. $repository['name'] . '</a>
-            </div>
+            </span>
         </div>';
         if ($repository['description'] != null)
         {
