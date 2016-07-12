@@ -25,24 +25,22 @@ along with this program; if not, write to the Free Software
 Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301 USA
 */
 
-// Variables that are to later be set via the admin panel
-$timeout = 10 * 60;
-$token = '';
-
 // Register the shortcode
 add_shortcode( 'gitrepo', 'f13_github_repo_shortcode');
 // Register the css
 add_action( 'wp_enqueue_scripts', 'f13_github_repo_style');
-// Register an option
-add_option( 'f13_display_mode', 'token');
-// Register update option
-update_option( 'f13_display_mode', 'token');
-// Register menu
-add_action( 'admin_menu', 'f13_create_settings_submenu');
+// Register the admin page
+add_action('admin_menu', 'f13_grs_create_menu');
 
-// Handle the shortcode
+/**
+ * [f13_github_repo_shortcode description]
+ * @param  [type] $atts    [description]
+ * @param  [type] $content [description]
+ * @return [type]          [description]
+ */
 function f13_github_repo_shortcode( $atts, $content = null )
 {
+
     // Get the attributes
     extract( shortcode_atts ( array (
         'author' => 'none',
@@ -60,8 +58,9 @@ function f13_github_repo_shortcode( $atts, $content = null )
     else
     if ($author != null || $repo != null)
     {
-        // Get the gloabal variables for timeout and token
-        global $timeout, $token;
+        // Get the plugin settings variables for timeout and token
+        $timeout = esc_attr( get_option('cache_timeout'));
+        $token = esc_attr( get_option('token'));
         // If the cache doesn't exist, create it and return the shortcode
         // Generate the API results for the repository
         $repository = f13_get_github_api('https://api.github.com/repos/' . $author . '/' . $repo, $token);
@@ -69,6 +68,8 @@ function f13_github_repo_shortcode( $atts, $content = null )
         $tags = f13_get_github_api('https://api.github.com/repos/' . $author . '/' . $repo . '/tags', $token);
         // Get the response of creating the shortcode
         $response = f13_format_github_repo($repository, $tags);
+        $response .= 'Your token is ' . $token;
+        $response .= 'Your timeout is ' . $timeout;
         // Store the output of the shortcode into the cache
         set_transient('wpgrs' . md5(serialize($atts)), $response, $timeout);
         // Return the response
@@ -80,7 +81,10 @@ function f13_github_repo_shortcode( $atts, $content = null )
     }
 }
 
-// Add the stylesheet
+/**
+ * [f13_github_repo_style description]
+ * @return [type] [description]
+ */
 function f13_github_repo_style()
 {
     wp_register_style( 'f13github-style', plugins_url('wp-github-repo-shortcode.css', __FILE__) );
@@ -194,6 +198,11 @@ function f13_format_github_repo($repository, $tags)
      return $string;
  }
 
+/**
+ * [f13_get_github_latest_tag description]
+ * @param  [type] $tags [description]
+ * @return [type]       [description]
+ */
 function f13_get_github_latest_tag($tags)
 {
     if ($tags != [])
@@ -210,55 +219,62 @@ function f13_get_github_latest_tag($tags)
  * Functions to create the backend
  */
 
-function f13_create_settings_submenu()
+/**
+ * [f13_grs_create_menu description]
+ * @return [type] [description]
+ */
+function f13_grs_create_menu()
 {
-    add_options_page( 'GitHub Repo Shortcode Settings Page', 'GitHub Repo', 'manage_options', 'github_repo_settings_menu', 'f13_settings_page');
-    add_action( 'admin_init', 'f13_register_settings' );
+    // Create the top-level menu
+    add_menu_page('GitHub Repo Shortcode Settings', 'GitHut Settings', 'administrator', __FILE__, 'f13_grs_settings_page');
+    // Retister the Settings
+    add_action( 'admin_init', 'f13_grs_settings');
 }
 
-function f13_register_settings()
+/**
+ * [f13_grs_settings description]
+ * @return [type] [description]
+ */
+function f13_grs_settings()
 {
-    register_setting( 'f13-settings-group', 'f13_options', 'f13_sanitize_options' );
+    // Register settings for token and timeout
+    register_setting( 'f13-grs-settings-group', 'token');
+    register_setting( 'f13-grs-settings-group', 'cache_timeout');
 }
 
-function f13_settings_page()
+/**
+ * [f13_grs_settings_page description]
+ * @return [type] [description]
+ */
+function f13_grs_settings_page()
 {
 ?>
     <div class="wrap">
-        <h2>GitHub Repo Shotcode Options</h2>
-        Quick intro to the plugin<br/>
-        How to get an access key:
-        <ol>
-            <li>
-                Go to github.com
-            </li>
-            <li>
-                Get a key
-            </li>
-        </ol>
+        <h2>GitHub Settings</h2>
+        Introductory text
         <form method="post" action="options.php">
-            <?php settings_fields( 'f13-settings-group' ); ?>
-            <?php $f13_options = get_option( 'f13_options' ); ?>
-            <table class="from-table">
-                <tr valign="middle">
+            <?php settings_fields( 'f13-grs-settings-group' ); ?>
+            <?php do_settings_sections( 'f13-grs-settings-group' ); ?>
+            <table class="form-table">
+                <tr valign="top">
                     <th scope="row">
-                        GitHub API Token
+                        GitHub Token
                     </th>
                     <td>
-                        <input type="text" name="f13_options['token']" value="<?php echo esc_attr( $f13_options['token'] ); ?>" />
+                        <input type="text" name="token" value="<?php echo esc_attr( get_option( 'token' ) ); ?>" />
+                    </td>
+                </tr>
+                <tr valign="top">
+                    <th scope="row">
+                        Cache timeout (minutes)
+                    </th>
+                    <td>
+                        <input type="text" name="cache_timeout" value="<?php echo esc_attr( get_option( 'cache_timeout' ) ); ?>" />
                     </td>
                 </tr>
             </table>
-            <p class="submit">
-                <input type="submit" class="button-primary" value="Save API Token" />
-            </p>
+            <?php submit_button(); ?>
         </form>
     </div>
 <?php
-}
-
-function f13_sanitize_options( $input )
-{
-    $input['token'] = sanitize_text_field( $input['token'] );
-    return $input;
 }
