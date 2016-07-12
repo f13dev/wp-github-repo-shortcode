@@ -60,6 +60,12 @@ function f13_github_repo_shortcode( $atts, $content = null )
     {
         // Get the plugin settings variables for timeout and token
         $timeout = esc_attr( get_option('cache_timeout')) * 60;
+        // If the timeout is set to 0, change it to 1 second, so effectively not
+        // caching, but saves a cache that doesnt timeout if the setting is changed later
+        if ($timeout == 0)
+        {
+            $timeout = 1;
+        }
         $token = esc_attr( get_option('token'));
         // If the cache doesn't exist, create it and return the shortcode
         // Generate the API results for the repository
