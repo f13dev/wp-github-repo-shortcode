@@ -6,7 +6,7 @@ Description: This plugin enables you to enter shortcode on any page or post in y
 Version: 1.0
 Author: Jim Valentine - f13dev
 Author URI: http://f13dev.com
-Text Domain: wp-github-repo-shortcode
+Text Domain: github-repo-shortcode
 License: GPLv3
 */
 
@@ -230,7 +230,7 @@ function f13_get_github_latest_tag($tags)
 function f13_grs_create_menu()
 {
     // Create the top-level menu
-    add_menu_page('GitHub Repo Shortcode Settings', 'GitHut Settings', 'administrator', __FILE__, 'f13_grs_settings_page');
+    add_menu_page('GitHub Repo Shortcode Settings', 'GitHub Settings', 'administrator', __FILE__, 'f13_grs_settings_page');
     // Retister the Settings
     add_action( 'admin_init', 'f13_grs_settings');
 }
@@ -310,7 +310,7 @@ function f13_grs_settings_page()
                 </tr>
             </table>
             <?php submit_button(); ?>
-        </form>        
+        </form>
         <h3>Shortcode example</h3>
         <p>
             If you wish to display a widget showing details of a project at: https://github.com/f13dev/wp-github-repo-shortcode use the following shortcode:
