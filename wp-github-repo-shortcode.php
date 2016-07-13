@@ -6,7 +6,7 @@ Description: This plugin enables you to enter shortcode on any page or post in y
 Version: 1.0
 Author: Jim Valentine - f13dev
 Author URI: http://f13dev.com
-Text Domain: github-repo-shortcode
+Text Domain: f13-github-repo-shortcode
 License: GPLv3
 */
 
