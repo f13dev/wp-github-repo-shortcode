@@ -33,7 +33,8 @@ add_action( 'wp_enqueue_scripts', 'f13_github_repo_style');
 add_action('admin_menu', 'f13_grs_create_menu');
 
 /**
- * [f13_github_repo_shortcode description]
+ * The main function to create the shortcode results
+ * storing or retreiving the data from cache
  * @param  [type] $atts    [description]
  * @param  [type] $content [description]
  * @return [type]          [description]
@@ -86,7 +87,7 @@ function f13_github_repo_shortcode( $atts, $content = null )
 }
 
 /**
- * [f13_github_repo_style description]
+ * A function to register the stylesheet
  * @return [type] [description]
  */
 function f13_github_repo_style()
@@ -203,7 +204,9 @@ function f13_format_github_repo($repository, $tags)
  }
 
 /**
- * [f13_get_github_latest_tag description]
+ * A function to return the latest tag name
+ * if one or more tags exist, otherwise returns
+ * none.
  * @param  [type] $tags [description]
  * @return [type]       [description]
  */
@@ -224,19 +227,19 @@ function f13_get_github_latest_tag($tags)
  */
 
 /**
- * [f13_grs_create_menu description]
+ * A function to register the menu page
  * @return [type] [description]
  */
 function f13_grs_create_menu()
 {
     // Create the top-level menu
-    add_menu_page('GitHub Repo Shortcode Settings', 'GitHub Settings', 'administrator', __FILE__, 'f13_grs_settings_page');
+    add_options_page('F13Devs GitHub Repo Shortcode Settings', 'F13 GitHub Repo Shortcode', 'administrator', 'f13-github-repo-shortcode', 'f13_grs_settings_page');
     // Retister the Settings
     add_action( 'admin_init', 'f13_grs_settings');
 }
 
 /**
- * [f13_grs_settings description]
+ * A function to register the settings group
  * @return [type] [description]
  */
 function f13_grs_settings()
@@ -247,7 +250,7 @@ function f13_grs_settings()
 }
 
 /**
- * [f13_grs_settings_page description]
+ * A function to create the settings page
  * @return [type] [description]
  */
 function f13_grs_settings_page()

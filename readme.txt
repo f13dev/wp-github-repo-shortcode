@@ -35,7 +35,7 @@ This section describes how to install the plugin and get it working.
 1. Upload the plugin files to the `/wp-content/plugins/plugin-name` directory, or install the plugin through the WordPress plugins screen directly.
 2. Activate the plugin through the 'Plugins' screen in WordPress
 3. Add the shortcode [wpplugin author="author" repo="repo"] to the desired location
-4. If desired, add a GitHub API Token and/or alter the cache timeout on the admin page admin->GitHub Settings.
+4. If desired, add a GitHub API Token and/or alter the cache timeout on the admin page Settings->F13 GitHub Repo Shotcode
 
 == Frequently Asked Questions ==
 
